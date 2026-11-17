@@ -51,15 +51,44 @@ bday_prob_df |>
     y = "Probability of Shared Birthday") 
 ```
 
-There is a very low probability of shared birthdays when pulling a two person sample, and near 1 probability when pulling from a sample of 50. I was honestly suprised by this result -- I didn't expect the probability to be almost 100% at such a low sample size. The curve generally follows an S shape, with the largest slope in the middle range of the sample sizes. 
+There is a very low probability of shared birthdays when pulling a two person sample, and near 1 probability when pulling from a sample of 50. I was honestly surprised by this result -- I didn't expect the probability to be almost 100% at such a low sample size. The curve generally follows an S shape, with the largest slope in the middle range of the sample sizes. 
 
 ## Problem 2
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 longit_df = 
-  read.csv("data/")
-  list.files("data/")
+  tibble(files = list.files("data/")) |>
+  mutate(
+    path = str_c("data/", files),
+    data = map(path, read_csv)
+  ) |>
+  unnest(data) |>
+  pivot_longer(
+    starts_with("week_"),
+    names_to = "week",
+    names_prefix = "week_",
+    values_to = "observed_value"
+  ) |>
+  mutate(subject = str_remove(files, ".csv")) |>
+  separate(files, into = c("arm", "id"), sep = "_") |>
+  mutate(
+    id = str_remove(id, ".csv"),
+    week = as.numeric(week)
+  ) |>
+  select(-path)
 ```
+
+```{r}
+longit_df |>
+  ggplot(aes(x = week, y = observed_value, group = subject, color = arm)) +
+  geom_line(alpha = 0.5) +
+  labs(
+    title = "Observed Values Over Time by Subject",
+    x = "Time (weeks)",
+    y = "Observed Value")
+```
+
+The experimental group generally displayed increasing observed values over time compared to the control, however each group had relatively similar baseline values. This is indicative that the experimental group was differentially impacted by treatment as compared to the control group. 
 
 ## Problem 3
 
