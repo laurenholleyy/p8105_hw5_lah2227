@@ -10,6 +10,8 @@ set.seed(1)
 
 ## Problem 1
 
+Writing the birthdays function:
+
 ```{r}
 birthdays = function(n) {
   
@@ -19,6 +21,8 @@ birthdays = function(n) {
   
 }
 ```
+
+Iterating the function for multiple simulations:
 
 ```{r}
 bday_results_df = 
@@ -40,6 +44,8 @@ bday_results_df |>
     ) 
 ```
 
+Creating the plot:
+
 ```{r}
 bday_prob_df |> 
   ggplot(aes(x = sample_size, y = shared_prob)) + 
@@ -53,6 +59,8 @@ bday_prob_df |>
 There is a very low probability of shared birthdays when pulling a two person sample, and near 1 probability when pulling from a sample of 50. I was honestly surprised by this result -- I didn't expect the probability to be almost 100% at such a low sample size. The curve generally follows an S shape, with the largest slope in the middle range of the sample sizes. 
 
 ## Problem 2
+
+Uploading data using iteration over file names:
 
 ```{r message=FALSE, warning=FALSE}
 longit_df = 
@@ -76,6 +84,8 @@ longit_df =
   ) |>
   select(-path)
 ```
+
+Spaghetti plot of subjects' observation values over time:
 
 ```{r}
 longit_df |>
@@ -114,7 +124,7 @@ sim_results_df =
   unnest(estimate_df)
 ```
 
-Plot for effect size and power (null rejection)
+Plot for effect size and power (null rejection):
 
 ```{r}
 sim_results_df |>
@@ -133,7 +143,7 @@ sim_results_df |>
 
 As effect size (mu) increases, power also increases. This means that the null is more frequently rejected at higher means. At mu = 0 the power is about 0.05, which means that even when the null is true the test will still reject 5% of the time.
 
-Overlaid sample mean plots
+Overlaid sample mean plots:
 
 ```{r}
 sim_results_df |>
